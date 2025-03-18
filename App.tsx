@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  useFonts,
+  PlusJakartaSans_300Light,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+} from "@expo-google-fonts/plus-jakarta-sans";
+
+import '@/styles/index';
+
+import { MainScreen } from './source/screens/AuthenticatedFlow/MainScreen';
+
+
 
 export default function App() {
+  const [loaded, error] = useFonts({
+    PlusJakartaSans_300Light,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
+  });
+
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar barStyle="light-content" translucent />
+      <MainScreen />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

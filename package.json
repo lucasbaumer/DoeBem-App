@@ -9,10 +9,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/plus-jakarta-sans": "^0.2.3",
     "expo": "~52.0.39",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
-    "react-native": "0.76.7"
+    "react-native": "0.76.7",
+    "react-native-dotenv": "^3.4.11",
+    "react-native-unistyles": "2.31"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -20,6 +23,7 @@
     "@types/jest": "^29.5.14",
     "@types/react": "^18.3.18",
     "@types/react-test-renderer": "^19.0.0",
+    "babel": "^5.8.38",
     "typescript": "^5.8.2"
   },
   "private": true
