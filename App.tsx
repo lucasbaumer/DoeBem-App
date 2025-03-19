@@ -12,7 +12,7 @@ import {
 
 import '@/styles/index';
 
-import { MainScreen } from './source/screens/AuthenticatedFlow/MainScreen';
+import Routes from '@/routes';
 
 
 
@@ -30,7 +30,7 @@ export default function App() {
   return (
     <>
       <StatusBar barStyle="light-content" translucent />
-      <MainScreen />
+      <Routes />
     </>
   );
 }

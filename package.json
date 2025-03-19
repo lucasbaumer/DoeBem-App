@@ -10,11 +10,17 @@
   },
   "dependencies": {
     "@expo-google-fonts/plus-jakarta-sans": "^0.2.3",
+    "@react-navigation/native": "^7.0.15",
+    "@react-navigation/native-stack": "^7.2.1",
     "expo": "~52.0.39",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-dotenv": "^3.4.11",
+    "react-native-responsive-fontsize": "^0.5.1",
+    "react-native-safe-area-context": "^5.3.0",
+    "react-native-screens": "^4.9.2",
+    "react-native-svg": "^15.11.2",
     "react-native-unistyles": "2.31"
   },
   "devDependencies": {
@@ -24,6 +30,7 @@
     "@types/react": "^18.3.18",
     "@types/react-test-renderer": "^19.0.0",
     "babel": "^5.8.38",
+    "react-native-svg-transformer": "^1.5.0",
     "typescript": "^5.8.2"
   },
   "private": true

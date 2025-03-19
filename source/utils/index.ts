@@ -1,0 +1,1 @@
+export { getResponsiveSizeByPixel } from "./getResponsiveSizeByPixel";
