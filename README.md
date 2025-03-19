@@ -8,7 +8,7 @@
 Clone o projeto
 
 ```bash
-  git clone https://link-para-o-projeto
+  git clone https://github.com/lucasbaumer/DoeBem-App.git
 ```
 
 Entre no diretório do projeto
