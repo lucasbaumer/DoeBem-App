@@ -1,8 +1,11 @@
 export const lightTheme = {
   colors: {
-    primary: "#111C4E",
+    primary: "#2C2C2C",
+    primaryTwentyPercentOpacity: "rgba(17, 28, 78, 0.2)",
+    primaryBorder: "rgba(17, 28, 78, 0.4)",
     background: "#FFFFFF",
     black: "#000000",
+    white: "#FFFFFF",
     divider: "#D7DBE7",
     red: {
       base: "#A62035",
@@ -12,6 +15,13 @@ export const lightTheme = {
       success: "#25AE88",
       canceled: "#D75A4A",
       inProgress: "#EBBA32",
+    },
+    orderShipmentStatus: {
+      delivered: "#25AE88",
+      canceled: "#D75A4A",
+      returnToSender: "#D75A4A",
+      inTransit: "#0067FF",
+      awaitingCollection: "#EBBA32",
     },
     typography: {
       title: "#111C4E",
@@ -24,12 +34,13 @@ export const lightTheme = {
       lightGray: "#7B7B7B",
       tabBar: "#111C4EB0",
       focused: "#A62035",
-      icon: "#0067FF",
+      icon: "#D6D6D6",
       exit: "#D75A4A",
       notify: "#111C4ECC",
       black: "#000000",
       white: "#FFFFFF",
       beige: "#C3B7B0",
+      read: "#0067FF",
     },
     input: {
       border: "#D7DBE7",
@@ -46,6 +57,12 @@ export const lightTheme = {
       iconButton: "#F8F8F8",
       border: "#0067FF",
       blue: "#4A93FF",
+    },
+    gradients: {
+      tabBar: {
+        start: "rgba(0, 0, 0, 0)",
+        end: "rgba(25, 33, 61, 0.06)",
+      },
     },
   },
   fonts: {

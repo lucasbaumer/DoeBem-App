@@ -1,5 +1,5 @@
-import { StatusBar } from 'react-native';
-import React from 'react';
+import React, { useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
 import {
   useFonts,
   PlusJakartaSans_300Light,
@@ -10,11 +10,9 @@ import {
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
-import '@/styles/index';
+import Routes from "@/routes";
 
-import Routes from '@/routes';
-
-
+import "@/styles";
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -26,10 +24,9 @@ export default function App() {
     PlusJakartaSans_800ExtraBold,
   });
 
-
   return (
     <>
-      <StatusBar barStyle="light-content" translucent />
+      <StatusBar translucent style="dark" />
       <Routes />
     </>
   );

@@ -1,37 +1,35 @@
 import React, { LegacyRef, useEffect, useRef, useState } from "react";
-import { Animated, Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
+import { Animated, Text, TextInput as TextInputNative, TextInputProps, View } from "react-native";
+import TextInput, { Mask } from "react-native-mask-input";
 import { useStyles } from "react-native-unistyles";
 
 import { getResponsiveSizeByPixel } from "@/utils/getResponsiveSizeByPixel";
 
-import EyeClosedIcon from "@/assets/images/icons/eye-closed.svg";
-import EyeOpenIcon from "@/assets/images/icons/eye-open.svg";
-
 import { stylesheet } from "./styles";
 
-export interface InputProps
+export interface InputMaskProps
   extends Omit<TextInputProps, "ref" | "style" | "cursorColor" | "selectionColor"> {
-  inputRef?: LegacyRef<TextInput>;
+  inputRef?: LegacyRef<TextInputNative>;
+  mask?: Mask;
   label?: string;
   error?: string;
 }
 
-export function Input({
+export function InputMask({
   inputRef,
   label,
   error,
   value,
-  secureTextEntry,
+  placeholder,
   onFocus,
   onBlur,
   ...inputProps
-}: InputProps) {
+}: InputMaskProps) {
   const { styles, theme } = useStyles(stylesheet);
 
   const animation = useRef(new Animated.Value(0)).current;
 
   const [isFocused, setIsFocused] = useState(false);
-  const [textIsVisible, setTextIsVisible] = useState(false);
 
   const fontSizeAnimated = animation.interpolate({
     inputRange: [0, 1],
@@ -74,21 +72,11 @@ export function Input({
         </Animated.Text>
       )}
 
-      {secureTextEntry ? (
-        <TouchableOpacity
-          onPress={() => {
-            setTextIsVisible((state) => !state);
-          }}
-          style={styles.showPasswordButton}
-        >
-          {textIsVisible ? <EyeOpenIcon width={24} /> : <EyeClosedIcon width={24} />}
-        </TouchableOpacity>
-      ) : null}
-
       <TextInput
         {...inputProps}
         ref={inputRef}
         value={value}
+        placeholder={typeof placeholder === "string" ? placeholder : undefined}
         onFocus={(event) => {
           setIsFocused(true);
 
@@ -103,9 +91,6 @@ export function Input({
             onBlur(event);
           }
         }}
-        secureTextEntry={
-          typeof secureTextEntry === "boolean" && secureTextEntry ? !textIsVisible : undefined
-        }
         cursorColor={theme.colors.primary}
         style={styles.input}
       />
