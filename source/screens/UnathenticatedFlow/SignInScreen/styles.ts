@@ -19,7 +19,7 @@ export const stylesheet = createStyleSheet((theme) => ({
   pageTitle: {
     fontFamily: theme.fonts.plusJakartaSans[600],
     fontSize: getResponsiveSizeByPixel(30),
-    color: theme.colors.typography.primary,
+  color: theme.colors.typography.primary,
   },
   formContainer: {
     marginTop: getResponsiveSizeByPixel(32),

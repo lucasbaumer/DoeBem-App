@@ -30,6 +30,7 @@ type RootStackParamList = {
   TermsOfUse: undefined;
   PendingAccount: undefined;
   Main: undefined;
+  MainTab: undefined;
 };
 
 const formSchema = z.object({
@@ -95,7 +96,7 @@ export default function SignInScreen() {
       // await delay(1000);
       // const accountDetailsResponse = await accountDetailsRequest().unwrap();
       // dispatch(setUser(accountDetailsResponse));
-      navigator.navigate("Main");
+      navigator.navigate("MainTab");
     } catch (error) {
       if ("data" in error) {
         if (error.status === 403) {

@@ -1,5 +1,11 @@
 import React, { useRef, useState } from "react";
-import { ScrollView, View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -12,7 +18,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 // import { SignUpRequest } from "@/@types";
 
-import { errorToast, PersonalizedMasks } from "@/utils/index";
+import {
+  errorToast,
+  getResponsiveSizeByPixel,
+  PersonalizedMasks,
+} from "@/utils/index";
 
 // import { useSignUpMutation } from "@/store/api";
 
@@ -22,7 +32,6 @@ import { ControlledInput } from "@/components/features/ControlledInput";
 import { ControlledInputMask } from "@/components/features/ControlledInputMask";
 
 import { stylesheet } from "./styles";
-import ControlledDatePicker from "@/components/features/ControlledDateInput";
 
 const formSchema = z
   .object({
@@ -54,7 +63,8 @@ type RootStackParamList = {
 export default function SignUpScreen() {
   const { styles, theme } = useStyles(stylesheet);
 
-  const navigator = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const scrollViewRef = useRef<ScrollView>(null);
   const nameInputRef = useRef<TextInput>(null);
@@ -91,7 +101,6 @@ export default function SignUpScreen() {
 
   const onSubmit = handleSubmit(async (form) => {
     try {
-
       // await signUpRequest(form).unwrap();
 
       navigator.replace("SignUpSuccess");
@@ -108,92 +117,236 @@ export default function SignUpScreen() {
     }
   });
 
+  const [formType, setFormType] = useState("donor");
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView>
         <View style={styles.content}>
           <ErrorMessage title="Erro ao criar conta:" errors={apiErrors} />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              borderBottomColor: theme.colors.divider,
+              borderBottomWidth: 1,
+              marginBottom: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                alignItems: "center",
+                paddingVertical: 10,
+                backgroundColor:
+                  formType === "donor"
+                    ? "rgba(58, 0, 229, 0.1)"
+                    : "transparent",
+                borderBottomWidth: formType === "donor" ? 2 : 0,
+                borderBottomColor:
+                  formType === "donor" ? "#3A00E5" : "transparent",
+              }}
+              onPress={() => setFormType("donor")}
+            >
+              <Text
+                style={{
+                  fontSize: getResponsiveSizeByPixel(16),
+                  fontFamily: theme.fonts.plusJakartaSans[400],
+                }}
+              >
+                Doador
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                alignItems: "center",
+                paddingVertical: 10,
+                backgroundColor:
+                  formType === "hospital"
+                    ? "rgba(58, 0, 229, 0.1)"
+                    : "transparent",
+                borderBottomWidth: formType === "hospital" ? 2 : 0,
+                borderBottomColor:
+                  formType === "hospital" ? "#3A00E5" : "transparent",
+              }}
+              onPress={() => setFormType("hospital")}
+            >
+              <Text
+                style={{
+                  fontSize: getResponsiveSizeByPixel(16),
+                  fontFamily: theme.fonts.plusJakartaSans[400],
+                }}
+              >
+                Hospital
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.formContainer}>
-            <ControlledInput
-              inputRef={nameInputRef}
-              control={control}
-              name="name"
-              label="Nome"
-              autoCapitalize="words"
-              autoComplete="name"
-              autoCorrect={false}
-              error={errors.name?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => emailInputRef.current?.focus()}
-              editable={!isSubmitting}
-            />
-            <ControlledInput
-              inputRef={emailInputRef}
-              control={control}
-              name="email"
-              label="E-mail"
-              keyboardType="email-address"
-              autoComplete="email"
-              autoCapitalize="none"
-              error={errors.email?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
-              editable={!isSubmitting}
-            />
-            <ControlledInput
-              inputRef={passwordInputRef}
-              control={control}
-              name="password"
-              label="Senha"
-              secureTextEntry
-              autoComplete="new-password"
-              autoCapitalize="none"
-              error={errors.password?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
-              editable={!isSubmitting}
-            />
-            <ControlledInput
-              inputRef={confirmPasswordInputRef}
-              control={control}
-              name="password_confirmation"
-              autoComplete="password"
-              label="Confirmar senha"
-              secureTextEntry
-              autoCapitalize="none"
-              error={errors.password_confirmation?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => phoneInputRef.current?.focus()}
-              editable={!isSubmitting}
-            />
-            <ControlledInputMask
-              inputRef={phoneInputRef}
-              control={control}
-              name="cellphone"
-              label="Telefone"
-              autoComplete="tel"
-              keyboardType="phone-pad"
-              mask={PersonalizedMasks.CELLPHONE}
-              maxLength={16}
-              error={errors.cellphone?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => cpfInputRef.current?.focus()}
-              editable={!isSubmitting}
-            />
-            <ControlledInputMask
-              inputRef={cpfInputRef}
-              control={control}
-              name="document"
-              label="CPF"
-              keyboardType="numeric"
-              autoComplete="cc-number"
-              mask={Masks.BRL_CPF}
-              maxLength={14}
-              error={errors.document?.message}
-              returnKeyType="next"
-              onSubmitEditing={() => contactNameRef.current?.focus()}
-              editable={!isSubmitting}
-            />
+            {formType === "hospital" && (
+              <>
+                <ControlledInput
+                  inputRef={nameInputRef}
+                  control={control}
+                  name="contact_person_name"
+                  label="Gerente de Doações"
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  autoCorrect={false}
+                  error={errors.contact_person_name?.message}
+                  returnKeyType="next"
+                  onSubmitEditing={() => emailInputRef.current?.focus()}
+                  editable={!isSubmitting}
+                />
+                <ControlledInput
+                  inputRef={emailInputRef}
+                  control={control}
+                  name="email"
+                  label="E-mail"
+                  keyboardType="email-address"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  error={errors.email?.message}
+                  returnKeyType="next"
+                  onSubmitEditing={() => cpfInputRef.current?.focus()}
+                  editable={!isSubmitting}
+                />
+                <ControlledInput
+                  inputRef={cpfInputRef}
+                  control={control}
+                  name="document"
+                  label="CNES"
+                  keyboardType="numeric"
+                  autoComplete="cc-number"
+                  error={errors.document?.message}
+                  returnKeyType="next"
+                  onSubmitEditing={() => contactNameRef.current?.focus()}
+                  editable={!isSubmitting}
+                />
+                <ControlledInput
+                  inputRef={contactNameRef}
+                  control={control}
+                  name="name"
+                  label="Nome da Instituição"
+                  autoCapitalize="words"
+                  autoComplete="organization"
+                  autoCorrect={false}
+                  error={errors.name?.message}
+                  returnKeyType="next"
+                  onSubmitEditing={() => passwordInputRef.current?.focus()}
+                  editable={!isSubmitting}
+                />
+                <ControlledInput
+                  inputRef={passwordInputRef}
+                  control={control}
+                  name="password"
+                  label="Senha"
+                  secureTextEntry
+                  autoComplete="new-password"
+                  autoCapitalize="none"
+                  error={errors.password?.message}
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    confirmPasswordInputRef.current?.focus()
+                  }
+                  editable={!isSubmitting}
+                />
+                <ControlledInput
+                  inputRef={confirmPasswordInputRef}
+                  control={control}
+                  name="password_confirmation"
+                  autoComplete="password"
+                  label="Confirmar senha"
+                  secureTextEntry
+                  autoCapitalize="none"
+                  error={errors.password_confirmation?.message}
+                  returnKeyType="done"
+                  editable={!isSubmitting}
+                />
+              </>
+            )}
+            {formType === "donor" && (
+                <>
+                <ControlledInput
+                inputRef={nameInputRef}
+                control={control}
+                name="name"
+                label="Nome"
+                autoCapitalize="words"
+                autoComplete="name"
+                autoCorrect={false}
+                error={errors.name?.message}
+                returnKeyType="next"
+                onSubmitEditing={() => emailInputRef.current?.focus()}
+                editable={!isSubmitting}
+                />
+                <ControlledInput
+                inputRef={emailInputRef}
+                control={control}
+                name="email"
+                label="E-mail"
+                keyboardType="email-address"
+                autoComplete="email"
+                autoCapitalize="none"
+                error={errors.email?.message}
+                returnKeyType="next"
+                onSubmitEditing={() => cpfInputRef.current?.focus()}
+                editable={!isSubmitting}
+                />
+                <ControlledInput
+                inputRef={cpfInputRef}
+                control={control}
+                name="document"
+                label="CPF"
+                keyboardType="numeric"
+                autoComplete="cc-number"
+                error={errors.document?.message}
+                returnKeyType="next"
+                onSubmitEditing={() => contactNameRef.current?.focus()}
+                editable={!isSubmitting}
+                />
+                <ControlledInput
+                inputRef={phoneInputRef}
+                control={control}
+                name="cellphone"
+                label="Telefone"
+                autoComplete="tel"
+                keyboardType="phone-pad"
+                error={errors.cellphone?.message}
+                returnKeyType="next"
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
+                editable={!isSubmitting}
+                />
+                <ControlledInput
+                inputRef={passwordInputRef}
+                control={control}
+                name="password"
+                label="Senha"
+                secureTextEntry
+                autoComplete="new-password"
+                autoCapitalize="none"
+                error={errors.password?.message}
+                returnKeyType="next"
+                onSubmitEditing={() =>
+                confirmPasswordInputRef.current?.focus()
+                }
+                editable={!isSubmitting}
+                />
+                <ControlledInput
+                inputRef={confirmPasswordInputRef}
+                control={control}
+                name="password_confirmation"
+                autoComplete="password"
+                label="Confirmar senha"
+                secureTextEntry
+                autoCapitalize="none"
+                error={errors.password_confirmation?.message}
+                returnKeyType="done"
+                editable={!isSubmitting}
+                />
+                </>
+            )}
           </View>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -202,7 +355,11 @@ export default function SignUpScreen() {
             disabled={isSubmitting}
           >
             <MaterialCommunityIcons
-              name={termAccepted ? "checkbox-marked-outline" : "checkbox-blank-outline"}
+              name={
+                termAccepted
+                  ? "checkbox-marked-outline"
+                  : "checkbox-blank-outline"
+              }
               size={24}
               color={theme.colors.primary}
             />
