@@ -13,6 +13,8 @@ import {
 import Routes from "@/routes";
 
 import "@/styles";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -25,9 +27,9 @@ export default function App() {
   });
 
   return (
-    <>
+    <Provider store={store}>
       <StatusBar translucent style="dark" />
-      <Routes />
-    </>
+      <Routes />  
+    </Provider>
   );
 }

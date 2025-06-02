@@ -23,6 +23,7 @@ import { ControlledInput } from "@/components/features/ControlledInput";
 import Logo from "@/assets/images/main-logo.svg";
 
 import { stylesheet } from "./styles";
+import { useSignInMutation } from "@/store/api";
 
 type RootStackParamList = {
   ForgotPassword: undefined;
@@ -46,7 +47,7 @@ export default function SignInScreen() {
   const navigator = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   // const dispatch = useAppDispatch();
 
-  // const [signInRequest] = useSignInMutation();
+  const [signInRequest] = useSignInMutation();
   // const [accountDetailsRequest] = useLazyAccountDetailsQuery();
 
   const {
@@ -88,17 +89,15 @@ export default function SignInScreen() {
 
   const onSubmit = handleSubmit(async (form) => {
     try {
-    //   const delay = (delayInms: number) => {
-    //   return new Promise((resolve) => setTimeout(resolve, delayInms));
-    // };
-      // const signInResponse = await signInRequest(form).unwrap();
-      // dispatch(setToken(signInResponse.access_token));
-      // await delay(1000);
-      // const accountDetailsResponse = await accountDetailsRequest().unwrap();
-      // dispatch(setUser(accountDetailsResponse));
+      const delay = (delayInms: number) => {
+      return new Promise((resolve) => setTimeout(resolve, delayInms));
+    };
+      const signInResponse = await signInRequest(form).unwrap();
+
       navigator.navigate("MainTab");
     } catch (error) {
-      if ("data" in error) {
+      console.log(error)
+      if ("data" in error) { 
         if (error.status === 403) {
           return handleGoToPendingAccountScreen();
         }
