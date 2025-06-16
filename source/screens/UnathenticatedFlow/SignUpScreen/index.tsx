@@ -107,6 +107,7 @@ export default function SignUpScreen() {
       const result = await signUpRequest(formToSend).unwrap();
       navigator.replace("SignUpSuccess");
     } catch (error) {
+      console.error("Erro ao criar conta:", error);
       if ("data" in error) {
         setApiErrors([`${error.data.message}`]);
         scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });

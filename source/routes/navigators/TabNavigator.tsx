@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/native";
 import { Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-
 // import OrderListScreen from '@/screens/AuthenticatedFlow/OrderListScreen';
 // import ServiceScreen from '@/screens/AuthenticatedFlow/ServiceScreen';
 // import StoreScreen from '@/screens/AuthenticatedFlow/StoreScreen';
@@ -19,6 +18,7 @@ import { getResponsiveSizeByPixel } from "@/utils";
 import MainScreen from "@/screens/AuthenticatedFlow/MainScreen";
 import ProfileScreen from "@/screens/AuthenticatedFlow/ProfileScreen";
 import MenuSidebar from "@/components/organisms/MenuSiderbar";
+import { useAppSelector } from "@/hooks";
 
 type RootStackParamList = {
   SignIn: undefined;
@@ -33,6 +33,8 @@ export default function TabNavigator() {
 
   const navigator =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { user, access_token } = useAppSelector((store) => store.auth);
 
   return (
     <>
@@ -61,16 +63,20 @@ export default function TabNavigator() {
               }}
             >
               <MaterialCommunityIcons
-                name="bell"
-                size={16}
-                color={theme.colors.icon.event}
+                name="menu"
+                size={24}
+                color={theme.colors.icon.header}
               />
             </TouchableOpacity>
           ),
         }}
       >
         <Tab.Screen name="Home" component={MainScreen} />
-        <Tab.Screen name="Perfil" component={ProfileScreen} />
+        <Tab.Screen name="Donations" component={ProfileScreen} />
+
+        {user.role === "Admin" && access_token && (
+          <Tab.Screen name="Users" component={MainScreen} />
+        )}
       </Tab.Navigator>
       <MenuSidebar
         isVisible={isMenuVisible}

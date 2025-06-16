@@ -1,29 +1,31 @@
 import React from "react";
-import { View, Text, ScrollView, StatusBar } from "react-native";
+import { View, Text, ScrollView, StatusBar, Platform } from "react-native";
 import { useStyles } from "react-native-unistyles";
 import { stylesheet } from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { IconButton } from "@/components/atoms/IconButton";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getResponsiveSizeByPixel } from "@/utils";
 import { Button } from "@/components/atoms/Button";
-
-// Mock de dados
-const mockNews = {
-  id: 1,
-  title: "Campanha de Doação de Sangue",
-  image: "",
-  cnes: "1234567",
-  cidade: "Curitiba",
-  estado: "Paraná",
-  phone: "(41)99999-9999",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-};
+import { useHospitalDetailsQuery } from "@/store/api";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Hospital } from "@/@types/queries/HospitalListResponse";
 
 const HospitalDetailsScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<
+    NativeStackNavigationProp<{
+      Donation: { hospital: Hospital };
+      MainTab: undefined;
+    }>
+  >();
   const { styles, theme } = useStyles(stylesheet);
+  const route = useRoute();
+  const { hospitalId } = route.params as { hospitalId: string };
+  const {
+    data: hospital,
+    isLoading,
+    error,
+  } = useHospitalDetailsQuery(hospitalId);
   const [variant, setVariant] = React.useState<
     "primary" | "secondary" | "tertiary"
   >("secondary");
@@ -33,11 +35,11 @@ const HospitalDetailsScreen = () => {
     if (scrollY > 230) {
       setVariant("primary");
       StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor("#FFFFFF");
+      Platform.OS === "android" && StatusBar.setBackgroundColor("#FFFFFF");
     } else {
       setVariant("secondary");
       StatusBar.setBarStyle("light-content");
-      StatusBar.setBackgroundColor("transparent");
+      Platform.OS === "android" && StatusBar.setBackgroundColor("transparent");
     }
   };
 
@@ -48,11 +50,26 @@ const HospitalDetailsScreen = () => {
     navigation.navigate("MainTab");
   };
   const handleDonate = () => {
-    navigation.navigate("Donation", { hospital: mockNews });
+    navigation.navigate("Donation", { hospital });
   };
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
+  if (error || !hospital) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Erro ao carregar hospital.</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <ScrollView
         style={styles.container}
         onScroll={hadleScroll}
@@ -76,7 +93,7 @@ const HospitalDetailsScreen = () => {
           />
         </View>
         <View style={styles.newsDetailsBody}>
-          <Text style={styles.newsTitle}>{mockNews.title}</Text>
+          <Text style={styles.newsTitle}>{hospital.name}</Text>
           <View style={{ marginTop: 8 }}>
             <Text
               style={{
@@ -91,7 +108,7 @@ const HospitalDetailsScreen = () => {
                 size={16}
                 color={theme.colors.icon.event}
               />{" "}
-              {mockNews.cidade} - {mockNews.estado}
+              {hospital.city} - {hospital.state}
             </Text>
             <Text
               style={{
@@ -104,8 +121,8 @@ const HospitalDetailsScreen = () => {
                 name="office-building"
                 size={16}
                 color={theme.colors.icon.event}
-              />{" "}
-              CNES: {mockNews.cnes}
+              />
+              CNES: {hospital.cnes}
             </Text>
             <Text
               style={{
@@ -118,7 +135,7 @@ const HospitalDetailsScreen = () => {
                 size={16}
                 color={theme.colors.icon.event}
               />{" "}
-              {mockNews.phone}
+              {hospital.phone}
             </Text>
           </View>
         </View>
@@ -131,7 +148,7 @@ const HospitalDetailsScreen = () => {
             marginBottom: 12,
           }}
         >
-          {mockNews.description}
+          {hospital.description}
         </Text>
       </ScrollView>
       <View style={styles.footer}>

@@ -11,9 +11,9 @@ import MenuItem from "@/components/atoms/MenuItem";
 import Separator from "@/components/atoms/Separator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { RootState } from "@/store";
 import { logout } from "@/store/reducers/authSlice";
 import { useDispatch } from "react-redux";
+import { useAccountDetailsQuery } from "@/store/api";
 
 interface MenuSidebarProps {
   isVisible: boolean;
@@ -33,14 +33,15 @@ type RootStackParamList = {
 };
 
 const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
-  // Mock de tipo de perfil
-  // Troque para 'admin' para testar o menu de admin
-  const profileType = "donor"; // ou 'admin'
   const { styles, theme } = useStyles(stylesheet);
   const [isLogout, setIsLogout] = useState<boolean>(false);
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
+
+  const { data: account } = useAccountDetailsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const navigator =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -53,7 +54,6 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
   async function handleLogout() {
     onClose();
     setIsLogout(true);
-    navigation.navigate("SignIn");
   }
 
   return (
@@ -76,27 +76,34 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
       style={styles.modal}
     >
       <View style={styles.menu}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => handleNavigate("ProfileScreen")}
-          style={styles.profileContainer}
-        >
-          <View style={styles.profileIconContainer}>
-            <Icon
-              name="chevron-forward"
-              size={24}
-              style={styles.profileFowardIcon}
-            />
+        <TouchableOpacity activeOpacity={0.7} style={styles.profileContainer}>
+          <View style={styles.profilePictureContainer}>
+            <View style={styles.emptyAvatarImage}>
+              <Icon name="person" size={30} color={theme.colors.icon.event} />
+            </View>
+          </View>
+          <View style={styles.profileTextsContainer}>
+            <Text numberOfLines={2} style={styles.profileName}>
+              {account?.name}
+            </Text>
+            <Text style={styles.profileText}>
+              {account?.role === "Donor" ? "Doador" : "Administrador"}
+            </Text>
           </View>
         </TouchableOpacity>
         <Separator />
         <View style={styles.menuItemsContainer}>
-          {profileType === "donor" ? (
+          {account?.role === "Donor" ? (
             <>
               <MenuItem
-                iconName="person"
-                text="Perfil"
-                onPress={() => handleNavigate("ProfileScreen")}
+                iconName="heart"
+                text="Minhas Doações"
+                onPress={() => handleNavigate("Donations")}
+              />
+              <MenuItem
+                iconName="newspaper"
+                text="Hospitais"
+                onPress={() => handleNavigate("home")}
               />
               <MenuItem iconName="log-out" text="Sair" onPress={handleLogout} />
             </>

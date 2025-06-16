@@ -4,57 +4,30 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  ImageBackground,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useStyles } from "react-native-unistyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { HospitalCard } from "@/components/molecules/HospitalCard";
+import { useHospitalListQuery } from "@/store/api";
 
 import { stylesheet } from "./styles";
-
-// Mock de hospitais
-const mockHospitals = [
-  {
-    id: 1,
-    nome: "Hospital IPO",
-    cnes: "1234567",
-    estado: "Paraná",
-    cidade: "Curitiba",
-    phone: "(41)99999-9999",
-    descricao: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  },
-  {
-    id: 2,
-    nome: "Hospital X",
-    cnes: "1234567",
-    estado: "Paraná",
-    cidade: "Curitiba",
-    phone: "(41)99999-9999",
-    descricao: "Descrição",
-  },
-  {
-    id: 3,
-    nome: "Hospital Y",
-    cnes: "1234567",
-    estado: "Paraná",
-    cidade: "Curitiba",
-    phone: "(41)99999-9999",
-    descricao: "Descrição",
-  },
-];
 
 export default function MainScreen() {
   const { styles } = useStyles(stylesheet);
   const navigator = useNavigation<
     NativeStackNavigationProp<{
-      HospitalDetails: { newsId: number; external?: boolean };
+      HospitalDetails: { hospitalId: string;};
     }>
   >();
 
+  const { data : hospitals, isLoading, error } = useHospitalListQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const carouselHospitals = hospitals?.slice(0, 3);
+  
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -73,14 +46,14 @@ export default function MainScreen() {
             decelerationRate={"fast"}
             contentContainerStyle={styles.carousel}
           >
-            {mockHospitals.map((hospital, index) => (
+            {carouselHospitals?.map((hospital, index) => (
               <TouchableOpacity
                 key={index}
                 activeOpacity={0.9}
                 onPress={() =>
                   navigator.navigate(
                     "HospitalDetails",
-                    { newsId: hospital.id }
+                    { hospitalId: hospital.id }
                   )
                 }
                 style={styles.carouselCard}
@@ -101,18 +74,18 @@ export default function MainScreen() {
                 </View>
                 <View style={styles.carouselTexts}>
                   <Text numberOfLines={2} style={styles.carouselTitle}>
-                    {hospital.nome}
+                    {hospital.name}
                   </Text>
-                  <Text numberOfLines={2} style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>{hospital.descricao}</Text>
+                  <Text numberOfLines={2} style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>{hospital.description}</Text>
                   <Text style={styles.carouselDate}>
-                    {hospital.cidade} - {hospital.estado}
+                    {hospital.city} - {hospital.state}
                   </Text>
                 </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
           <View style={styles.paginationContainer}>
-            {mockHospitals.map((_, index) => (
+            {hospitals?.map((_, index) => (
               <View
                 key={index}
                 style={[styles.paginationDot, index === 0 && styles.activeDot]}
@@ -120,17 +93,16 @@ export default function MainScreen() {
             ))}
           </View>
           {/* Lista de cards mock */}
-          {mockHospitals.map((item) => (
+          {hospitals?.map((item) => (
             <View style={styles.newsCard} key={item.id}>
               <HospitalCard
-                Name={item.nome}
-                City={item.cidade}
-                State={item.estado}
-                Description={item.descricao}
+                Name={item.name}
+                City={item.city}
+                State={item.state}
                 onPress={() =>
                   navigator.navigate(
                     "HospitalDetails",
-                    { newsId: item.id }
+                    { hospitalId: item.id }
                   )
                 }
               />

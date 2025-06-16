@@ -7,6 +7,7 @@ interface User {
   cpf: string;
   phone: string;
   dateOfBirth: string;
+  role: "Donor" | "Admin";
 }
 
 interface IStateProps {

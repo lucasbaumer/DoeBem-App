@@ -1,8 +1,9 @@
-export interface UserDetailsResponse {
+export interface AccountDetailsResponse {
   id: string;
   name: string;
   email: string;
-  cpf: string;
   phone: string;
+  cpf: string;
   dateOfBirth: string;
+  role: "Donor" | "Admin";
 }

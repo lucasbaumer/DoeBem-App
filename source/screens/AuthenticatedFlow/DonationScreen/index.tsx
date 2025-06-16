@@ -2,27 +2,44 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useStyles } from "react-native-unistyles";
-import { HospitalCard } from "@/components/molecules/HospitalCard";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Icon from "@expo/vector-icons/Ionicons";
 import { Button } from "@/components/atoms/Button";
-import { ControlledInput } from "@/components/features/ControlledInput";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { stylesheet } from "./styles";
 import { IconButton } from "@/components/atoms/IconButton";
+import { ControlledInputMask } from "@/components/features/ControlledInputMask";
+import { Masks } from "react-native-mask-input";
+import { useAccountDetailsQuery, useDonationMutation } from "@/store/api";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useAppSelector } from "@/hooks";
+import Modal from "react-native-modal";
 
 const formSchema = z.object({
   value: z.string().min(1, "Informe um valor"),
 });
 
+type RootStackParamList = {
+  MainTab: undefined;
+  Donation: { hospital: any };
+};
+
 export default function DonationScreen() {
   const { styles, theme } = useStyles(stylesheet);
   const route = useRoute();
-  const navigation = useNavigation();
-  // Espera receber hospital por param
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const { hospital } = route.params as any;
+
+  const { user } = useAppSelector((store) => store.auth);
+
+  // const { data: accountData } = useAccountDetailsQuery();
+
+  const [donate, { isLoading: isDonating }] = useDonationMutation();
+  const [isModalVisible, setModalVisible] = React.useState(false);
 
   const {
     control,
@@ -36,9 +53,20 @@ export default function DonationScreen() {
   });
 
   const onSubmit = handleSubmit(async (form) => {
-    // Aqui você pode implementar a lógica de doação
-    // Exemplo: await donateRequest({ ...form, hospitalId: hospital.id })
-    navigation.goBack();
+    if (!user || !hospital) return;
+    try {
+      const result = await donate({
+        value: Number(
+          form.value.replace("R$ ", "").replace(/\./g, "").replace(/,/g, ".")
+        ),
+        date: new Date().toISOString().slice(0, 10),
+        donorId: user.id,
+        hospitalId: hospital.id,
+      });
+      setModalVisible(true);
+    } catch (error) {
+      console.error("Erro ao realizar doação:", error);
+    }
   });
 
   const handleGoBack = () => {
@@ -49,7 +77,7 @@ export default function DonationScreen() {
   };
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ padding: 16, marginTop: 80 }}
@@ -74,7 +102,7 @@ export default function DonationScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text numberOfLines={3} ellipsizeMode="tail" style={styles.Name}>
-              {hospital.title}
+              {hospital.name}
             </Text>
             <View style={styles.DateContainer}>
               <View style={styles.additionalInformationContainer}>
@@ -84,7 +112,7 @@ export default function DonationScreen() {
                   color={theme.colors.icon.event}
                 />
                 <Text style={styles.additionalInformationText}>
-                  {hospital.cidade} - {hospital.estado}
+                  {hospital.city} - {hospital.state}
                 </Text>
               </View>
               <View style={styles.additionalInformationContainer}>
@@ -112,20 +140,72 @@ export default function DonationScreen() {
         </View>
         <View style={{ marginTop: 24, gap: 16 }}>
           <Text style={styles.pageTitle}>Realizar Doação</Text>
-          <ControlledInput
+          <ControlledInputMask
             control={control}
             name="value"
             label="Valor da Doação (R$)"
             keyboardType="numeric"
             error={errors.value?.message}
             editable={!isSubmitting}
+            mask={Masks.BRL_CURRENCY}
           />
           <Button label="Doar" onPress={onSubmit} isLoading={isSubmitting} />
         </View>
       </ScrollView>
       <View style={styles.newsDetailsHeaderButtons}>
-        <IconButton iconName="chevron-left"  onPress={handleGoBack} />
+        <IconButton iconName="chevron-left" onPress={handleGoBack} />
       </View>
-    </>
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            borderRadius: 12,
+            padding: 24,
+            alignItems: "center",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="check-circle"
+            size={64}
+            color={"#4BB543"}
+            style={{ marginBottom: 16 }}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              marginBottom: 12,
+              textAlign: "center",
+              fontFamily: theme.fonts.plusJakartaSans[600],
+              color: theme.colors.typography.light,
+            }}
+          >
+            Obrigado pela sua doação!
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#555",
+              marginBottom: 24,
+              textAlign: "center",
+              fontFamily: theme.fonts.plusJakartaSans[400],
+              color: theme.colors.typography.dark_gray,
+            }}
+          >
+            Sua contribuição faz a diferença. A equipe do hospital agradece!
+          </Text>
+          <Button
+            label="Voltar para Home"
+            onPress={() => {
+              setModalVisible(false);
+              navigation.navigate("MainTab");
+            }}
+          />
+        </View>
+      </Modal>
+    </View>
   );
 }

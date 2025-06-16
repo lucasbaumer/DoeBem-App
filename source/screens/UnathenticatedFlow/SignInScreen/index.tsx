@@ -1,5 +1,11 @@
 import React, { useRef } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -11,10 +17,10 @@ import { z } from "../../../config/zod";
 
 import { errorToast, getResponsiveSizeByPixel } from "@/utils/index";
 
-// import { useAppDispatch } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 
-// import { useLazyAccountDetailsQuery, useSignInMutation } from "@/store/api";
-// import { setToken, setUser } from "@/store/reducers/authSlice";
+import { useLazyAccountDetailsQuery, useSignInMutation } from "@/store/api";
+import { setToken, setUser } from "@/store/reducers/authSlice";
 
 import { Button } from "@/components/atoms/Button";
 import { KeyboardView } from "@/components/atoms/KeyboardView";
@@ -23,9 +29,6 @@ import { ControlledInput } from "@/components/features/ControlledInput";
 import Logo from "@/assets/images/main-logo.svg";
 
 import { stylesheet } from "./styles";
-import { useSignInMutation } from "@/store/api";
-import { useAppDispatch } from "@/hooks";
-import { setToken } from "@/store/reducers/authSlice";
 
 type RootStackParamList = {
   ForgotPassword: undefined;
@@ -46,11 +49,12 @@ export default function SignInScreen() {
 
   const passwordInputRef = useRef<TextInput>(null);
 
-  const navigator = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigator =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
 
   const [signInRequest] = useSignInMutation();
-  // const [accountDetailsRequest] = useLazyAccountDetailsQuery();
+  const [accountDetailsRequest] = useLazyAccountDetailsQuery();
 
   const {
     control,
@@ -89,30 +93,31 @@ export default function SignInScreen() {
     navigator.navigate("PendingAccount");
   }
 
-  const onSubmit = handleSubmit(async (form: { email: string; password: string }) => {
-    try {
-      const delay = (delayInms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, delayInms));
-    };
-      const signInResponse = await signInRequest(form).unwrap();
-      dispatch(setToken(signInResponse.token));
-      console.log("signInResponse", signInResponse);
-      await delay(1000);
-      // const accountDetailsResponse = await accountDetailsRequest().unwrap();
-      // dispatch(setUser(accountDetailsResponse));
-      navigator.navigate("MainTab");
-    } catch (error) {
-      if ("data" in error) {
-        if (error.status === 403) {
-          return handleGoToPendingAccountScreen();
+  const onSubmit = handleSubmit(
+    async (form: { email: string; password: string }) => {
+      try {
+        const delay = (delayInms: number) => {
+          return new Promise((resolve) => setTimeout(resolve, delayInms));
+        };
+        const signInResponse = await signInRequest(form).unwrap();
+        dispatch(setToken(signInResponse.token));
+        await delay(1000);
+        const accountDetailsResponse =
+          await accountDetailsRequest(undefined).unwrap();
+        dispatch(setUser(accountDetailsResponse));
+        // navigator.navigate("MainTab");
+      } catch (error) {
+        if ("data" in error) {
+          if (error.status === 403) {
+            return handleGoToPendingAccountScreen();
+          }
+          errorToast({ message: error.data.errors[0] });
+        } else {
+          errorToast({ message: "Erro interno no servidor." });
         }
-
-        errorToast({ message: error.data.errors[0] });
-      } else {
-        errorToast({ message: "Erro interno no servidor." });
       }
     }
-  });
+  );
 
   return (
     <SafeAreaView style={styles.safeAreaViewContainer}>
@@ -161,24 +166,38 @@ export default function SignInScreen() {
               activeOpacity={0.7}
               style={styles.forgotPasswordButton}
             >
-              <Text style={styles.forgotPasswordButtonText}>Esqueceu a senha?</Text>
+              <Text style={styles.forgotPasswordButtonText}>
+                Esqueceu a senha?
+              </Text>
             </TouchableOpacity>
 
             <View style={styles.buttonContainer}>
-              <Button label="Entrar" onPress={onSubmit} isLoading={isSubmitting} />
+              <Button
+                label="Entrar"
+                onPress={onSubmit}
+                isLoading={isSubmitting}
+              />
             </View>
           </View>
           <View style={styles.signUpContainer}>
             <Text style={styles.signUpText}>Ainda não tem uma conta?</Text>
-            <TouchableOpacity activeOpacity={0.7} onPress={handleGoToSignUpScreen}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleGoToSignUpScreen}
+            >
               <Text style={styles.signUpButtonText}>Cadastre-se</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.termOfUseContainer}>
-            <Text style={styles.termOfUseText}>Ao entrar, você concorda com nossos</Text>
+            <Text style={styles.termOfUseText}>
+              Ao entrar, você concorda com nossos
+            </Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.termOfUseLink} onPress={handleGoToTermsOfUseScreen}>
+              <Text
+                style={styles.termOfUseLink}
+                onPress={handleGoToTermsOfUseScreen}
+              >
                 Termos e Condições e Política de Privacidade.
               </Text>
             </TouchableOpacity>

@@ -6,24 +6,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useStyles } from 'react-native-unistyles';
 
 import { stylesheet } from './styles';
+import { useAppSelector } from '@/hooks';
 
-const screenIcons = {
-  Home: 'home',
-  Pesquisar: 'search-web',
-  Notificações: 'bell',
-  Perfil: 'account',
-};
-
-const screenLabels = {
-  Home: 'Home',
-  Pesquisar: 'Pesquisar',
-  Notificações: 'Notificações',
-  Perfil: 'Perfil',
-};
 
 export function BottomTabBar({ state, navigation, insets }: BottomTabBarProps) {
   const { styles, theme } = useStyles(stylesheet);
 
+  const { user } = useAppSelector((store) => store.auth);
+  
+  const screenIcons = {
+    Home: 'home',
+    Pesquisar: 'search-web',
+    Notificações: 'bell',
+    Donations: 'heart',
+  };
+  
+  const screenLabels = {
+    Home: 'Home',
+    Pesquisar: 'Pesquisar',
+    Notificações: 'Notificações',
+    Donations: user.role === 'Admin' ? 'Doações' : 'Minhas Doações',
+  };
   return (
     <View
       style={[
