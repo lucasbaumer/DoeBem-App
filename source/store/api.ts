@@ -21,12 +21,13 @@ import {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_URL}/api`,
-    prepareHeaders: async (headers, { getState }) => {
+    baseUrl: `http://10.0.2.2:5129/api`,
+    prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState)?.auth.access_token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+      headers.set("Content-Type", "application/json");
       return headers;
     },
   }) as BaseQueryFn<string | FetchArgs, unknown, object, FetchBaseQueryMeta>,
@@ -35,48 +36,34 @@ export const api = createApi({
     // Auth
     signIn: builder.mutation<SignInResponse, SignInRequest>({
       query: (body) => ({
-        url: "/login",
+        url: "/Login",
         method: "POST",
         body,
       }),
       invalidatesTags: ["User"],
     }),
-    signOut: builder.mutation<DefaultResponse, void>({
-      query: () => ({
-        url: "/Donor/logout",
-        method: "POST",
-      }),
-    }),
-    signUp: builder.mutation<DefaultResponse, SignUpRequest>({
+    signUpDonor: builder.mutation<DefaultResponse, SignUpRequest>({
       query: (body) => ({
-        url: "/cadastrar",
+        url: "/Register/Donor",
         method: "POST",
         body,
       }),
     }),
-    // ** Account
-    // accountDetails: builder.query<AccountDetailsResponse, void>({
-    //   query: () => ({
-    //     url: "/Donor",
-    //     method: "GET",
-    //   }),
-    // }),
-    
-    // ** Contents
-    // getContentsBySlug: builder.query<ContentResponse, string>({
-    // query: (slug) => ({
-    //   url: `/contents/${slug}`,
-    //     method: "GET",
-    //   }),
-    // }),
+    signUpAdm: builder.mutation<DefaultResponse, SignUpRequest>({
+      query: (body) => ({
+        url: "/Register/Admin",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
 export const {
   // ** Auth
   useSignInMutation,
-  useSignOutMutation,
-  useSignUpMutation,
+  useSignUpDonorMutation,
+  useSignUpAdmMutation,
   // ** Account
   // useAccountDetailsQuery,
   // useSetAccountDetailsMutation,

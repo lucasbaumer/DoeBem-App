@@ -3,16 +3,21 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 
-import { MainScreen } from "@/screens/AuthenticatedFlow/MainScreen";
 import SignInScreen from "@/screens/UnathenticatedFlow/SignInScreen";
 import { GoBackHeader } from "@/components/organisms/GoBackHeader";
 import SignUpScreen from "@/screens/UnathenticatedFlow/SignUpScreen";
 
 import TabNavigator from "./navigators/TabNavigator";
+import { useAppSelector } from "@/hooks";
+import SignUpSuccessScreen from "@/screens/UnathenticatedFlow/SignUpSuccessScreen";
+import HospitalDetailsScreen from "@/screens/AuthenticatedFlow/HospitalDetailsScreen";
+import DonationScreen from "@/screens/AuthenticatedFlow/DonationScreen";
 
 const MainStack = createNativeStackNavigator();
 
 export default function Routes() {
+  const { access_token } = useAppSelector((store) => store.auth);
+
   return (
     <>
       <StatusBar
@@ -22,22 +27,51 @@ export default function Routes() {
         translucent={false}
       />
       <NavigationContainer>
-        <MainStack.Navigator id={undefined} initialRouteName="SignIn">
-          <MainStack.Screen
-            name="MainTab"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="SignIn"
-            component={SignInScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="SignUp"
-            component={SignUpScreen}
-            options={{ header: () => <GoBackHeader label="Cadastre-se" /> }}
-          />
+        <MainStack.Navigator
+          id={undefined}
+          initialRouteName={access_token ? "MainTab" : "SignIn"}
+        >
+          {access_token ? (
+            <>
+              <MainStack.Screen
+                name="MainTab"
+                component={TabNavigator}
+                options={{ headerShown: false }}
+              />
+              <MainStack.Screen
+                name="HospitalDetails"
+                component={HospitalDetailsScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <MainStack.Screen
+                name="Donation"
+                component={DonationScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <MainStack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{ headerShown: false }}
+              />
+              <MainStack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ header: () => <GoBackHeader label="Cadastre-se" /> }}
+              />
+              <MainStack.Screen
+                name="SignUpSuccess"
+                component={SignUpSuccessScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
         </MainStack.Navigator>
       </NavigationContainer>
     </>

@@ -17,4 +17,16 @@ export const PersonalizedMasks = {
     /\d/,
     /\d/,
   ],
+  dateOfBirth: [
+    /\d/,
+    /\d/,
+    "/",
+    /\d/,
+    /\d/,
+    "/",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+  ],
 };

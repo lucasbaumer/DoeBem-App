@@ -6,6 +6,7 @@ export const lightTheme = {
     background: "#FFFFFF",
     black: "#000000",
     white: "#FFFFFF",
+    skeleton: "#E1E9EE",
     divider: "#D7DBE7",
     red: {
       base: "#A62035",
@@ -26,6 +27,9 @@ export const lightTheme = {
     typography: {
       title: "#111C4E",
       text: "rgba(17, 28, 78, 0.69)",
+      dark_gray: "#515254",
+      light_gray: "#898A8D",
+      light_blue: "#0067FF",
       primary: "#1A202C",
       secundary: "#8C734B",
       tertiary: "#111C4E",
@@ -58,6 +62,20 @@ export const lightTheme = {
       iconButton: "#F8F8F8",
       border: "#0067FF",
       blue: "#4A93FF",
+    },
+    icon: {
+      menu: "#BABEC2",
+      event: "#C6C6C6",
+      default: "#1C1C1C",
+      tab_bar_active: "#4285F4",
+      tab_bar_inactive: "#B5B5B5",
+      header: "#1C1C1C",
+      white: "#FFFFFF",
+      principal: "#3D78D9",
+      background: "#E3EDFD",
+      backgroundError: "#CB4751",
+      waiting: "#f0c000",
+      whatsapp : "#008001"
     },
     gradients: {
       tabBar: {

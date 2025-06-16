@@ -6,13 +6,13 @@ import { stylesheet } from "./styles";
 
 interface ErrorMessageProps {
   title: string;
-  errors: string[];
+  errors?: string[];
 }
 
 export const ErrorMessage = ({ title, errors }: ErrorMessageProps) => {
   const { styles } = useStyles(stylesheet);
 
-  if (errors.length === 0) return null;
+  if (!errors || errors.length === 0) return null;
 
   return (
     <View style={styles.container}>

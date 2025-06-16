@@ -13,7 +13,6 @@ export interface IconButtonProps extends Omit<TouchableOpacityProps, "activeOpac
 
 export function IconButton({
   iconName,
-
   onPress,
   ...buttonProps
 }: IconButtonProps) {

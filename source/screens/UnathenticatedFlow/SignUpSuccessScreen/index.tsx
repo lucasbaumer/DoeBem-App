@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { getResponsiveSizeByPixel } from "@/utils";
 
-import { Button } from "@/components/atoms";
+import { Button } from "@/components/atoms/Button";
 
 import AccountsuccessIcon from "@/assets/images/icons/account-success-icon.svg";
 
@@ -30,11 +30,7 @@ export default function SignUpSuccessScreen() {
         />
       </View>
       <View style={styles.PedingAccountContainer}>
-        <Text style={styles.PedingAccountTextTitle}>Perfil em análise</Text>
-        <Text style={styles.PedingAccountText}>
-          Seu cadastro será analisado pelo nosso time e assim que tivermos um retorno você será
-          avisado, obrigado!
-        </Text>
+        <Text style={styles.PedingAccountTextTitle}>Faça seu login para começar a fazer o bem, de forma simples!</Text>
         <View>
           <Button label="Voltar para o Login" onPress={() => navigator.navigate("SignIn")} />
         </View>
