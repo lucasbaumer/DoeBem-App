@@ -100,13 +100,14 @@ export default function SignInScreen() {
           return new Promise((resolve) => setTimeout(resolve, delayInms));
         };
         const signInResponse = await signInRequest(form).unwrap();
+        console.log(signInResponse)
         dispatch(setToken(signInResponse.token));
         await delay(1000);
         const accountDetailsResponse =
           await accountDetailsRequest(undefined).unwrap();
         dispatch(setUser(accountDetailsResponse));
         // navigator.navigate("MainTab");
-      } catch (error) {
+      } catch (error) { 
         if ("data" in error) {
           if (error.status === 403) {
             return handleGoToPendingAccountScreen();
@@ -160,16 +161,6 @@ export default function SignInScreen() {
                 onSubmitEditing={onSubmit}
               />
             </View>
-
-            <TouchableOpacity
-              onPress={handleGoToForgotPasswordScreen}
-              activeOpacity={0.7}
-              style={styles.forgotPasswordButton}
-            >
-              <Text style={styles.forgotPasswordButtonText}>
-                Esqueceu a senha?
-              </Text>
-            </TouchableOpacity>
 
             <View style={styles.buttonContainer}>
               <Button

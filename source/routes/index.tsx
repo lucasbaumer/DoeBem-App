@@ -70,6 +70,7 @@ export default function Routes() {
                 component={SignUpSuccessScreen}
                 options={{ headerShown: false }}
               />
+              
             </>
           )}
         </MainStack.Navigator>

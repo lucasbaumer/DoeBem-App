@@ -19,6 +19,7 @@ import MainScreen from "@/screens/AuthenticatedFlow/MainScreen";
 import ProfileScreen from "@/screens/AuthenticatedFlow/ProfileScreen";
 import MenuSidebar from "@/components/organisms/MenuSiderbar";
 import { useAppSelector } from "@/hooks";
+import UsersListScreen from "@/screens/AuthenticatedFlow/UsersListScreen";
 
 type RootStackParamList = {
   SignIn: undefined;
@@ -74,8 +75,8 @@ export default function TabNavigator() {
         <Tab.Screen name="Home" component={MainScreen} />
         <Tab.Screen name="Donations" component={ProfileScreen} />
 
-        {user.role === "Admin" && access_token && (
-          <Tab.Screen name="Users" component={MainScreen} />
+        {user?.role === "Admin" && access_token && (
+          <Tab.Screen name="Users" component={UsersListScreen} />
         )}
       </Tab.Navigator>
       <MenuSidebar

@@ -38,6 +38,8 @@ export default function ProfileScreen() {
     donations = userData?.donations || [];
   }
 
+  console.log(user)
+
   const [selectedDonation, setSelectedDonation] = React.useState<any | null>(null);
   const [isModalVisible, setModalVisible] = React.useState(false);
 
@@ -46,7 +48,7 @@ export default function ProfileScreen() {
       style={styles.container}
       contentContainerStyle={{ padding: 20 }}
     >
-      <Text style={styles.pageTitle}>{user.role === "Admin"? "Doações" :  "Minhas Doações"}</Text>
+      <Text style={styles.pageTitle}>{user?.role === "Admin"? "Doações" :  "Minhas Doações"}</Text>
       {isLoading ? (
         <Text style={styles.emptyText}>Carregando...</Text>
       ) : error ? (

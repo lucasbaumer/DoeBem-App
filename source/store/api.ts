@@ -8,7 +8,7 @@ import {
 
 // eslint-disable-next-line import/no-unresolved
 // import { API_URL } from "@env";
-const API_URL = "http://localhost:5129";
+const API_URL = "http://172.20.10.4:5129";
 
 import { RootState } from ".";
 
@@ -99,6 +99,14 @@ export const api = createApi({
       }),
       providesTags: ["Donation"],
     }),
+    hospitalDonations: builder.query<DefaultResponse, string>({
+      query: (id) => ({
+        url: `/api/Donation/Hospital/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Donation"],
+    }),
+    // My Donations
     myDonations: builder.query<MyDonationsResponse, string>({
       query: (id) => ({
         url: `/WithDonations/${id}`,
@@ -123,5 +131,6 @@ export const {
   // ** Donation
   useDonationMutation,
   useMyDonationsQuery,
-  useDonationListQuery
+  useDonationListQuery,
+  useHospitalDonationsQuery,
 } = api;

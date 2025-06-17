@@ -17,15 +17,15 @@ export function BottomTabBar({ state, navigation, insets }: BottomTabBarProps) {
   const screenIcons = {
     Home: 'home',
     Pesquisar: 'search-web',
-    Notificações: 'bell',
+    Users: 'account-multiple',
     Donations: 'heart',
   };
   
   const screenLabels = {
     Home: 'Home',
     Pesquisar: 'Pesquisar',
-    Notificações: 'Notificações',
-    Donations: user.role === 'Admin' ? 'Doações' : 'Minhas Doações',
+    Users: 'Doadores',
+    Donations: user?.role === 'Admin' ? 'Doações' : 'Minhas Doações',
   };
   return (
     <View
