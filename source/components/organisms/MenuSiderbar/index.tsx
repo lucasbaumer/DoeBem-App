@@ -20,6 +20,12 @@ interface MenuSidebarProps {
   onClose: () => void;
 }
 
+type TabParamList = {
+  Home: undefined;
+  Donations: undefined;
+  Users: undefined;
+};
+
 type RootStackParamList = {
   CompanyInvoiceList: undefined;
   CollaboratorProfileScreen: undefined;
@@ -30,6 +36,7 @@ type RootStackParamList = {
   FinishedEventList: undefined;
   MemberList: undefined;
   SignIn: undefined;
+  MainTab: { screen?: keyof TabParamList };
 };
 
 const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
@@ -46,10 +53,15 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
   const navigator =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleNavigate = (screen: keyof RootStackParamList) => {
+  const handleNavigate = (screen: keyof TabParamList) => {
     onClose();
-    navigator.navigate(screen);
+    navigator.navigate('MainTab', { screen });
   };
+
+  const handleNavigateToStack = (screen: keyof RootStackParamList) => {
+  onClose();
+  navigator.navigate(screen as any);
+  };  
 
   async function handleLogout() {
     onClose();
@@ -103,7 +115,7 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
               <MenuItem
                 iconName="newspaper"
                 text="Hospitais"
-                onPress={() => handleNavigate("home")}
+                onPress={() => handleNavigate("Home")}
               />
               <MenuItem iconName="log-out" text="Sair" onPress={handleLogout} />
             </>
@@ -112,22 +124,22 @@ const MenuSidebar: React.FC<MenuSidebarProps> = ({ isVisible, onClose }) => {
               <MenuItem
                 iconName="business"
                 text="Hospitais"
-                onPress={() => handleNavigate("NewsList")}
+                onPress={() => handleNavigateToStack("NewsList")}
               />
               <MenuItem
                 iconName="person-add"
                 text="Criar Admin"
-                onPress={() => handleNavigate("MemberList")}
+                onPress={() => handleNavigateToStack("MemberList")}
               />
               <MenuItem
                 iconName="add-circle"
                 text="Criar Hospital"
-                onPress={() => handleNavigate("CompanyInvoiceList")}
+                onPress={() => handleNavigateToStack("CreateHospital")}
               />
               <MenuItem
                 iconName="cash"
                 text="Doações"
-                onPress={() => handleNavigate("EventList")}
+                onPress={() => handleNavigateToStack("EventList")}
               />
               <MenuItem iconName="log-out" text="Sair" onPress={handleLogout} />
             </>

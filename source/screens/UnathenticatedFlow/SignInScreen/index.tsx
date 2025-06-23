@@ -106,7 +106,7 @@ export default function SignInScreen() {
         const accountDetailsResponse =
           await accountDetailsRequest(undefined).unwrap();
         dispatch(setUser(accountDetailsResponse));
-        // navigator.navigate("MainTab");
+        navigator.navigate("MainTab");
       } catch (error) { 
         if ("data" in error) {
           if (error.status === 403) {

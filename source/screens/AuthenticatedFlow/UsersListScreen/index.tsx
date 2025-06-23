@@ -2,24 +2,11 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useStyles } from "react-native-unistyles";
 import { stylesheet } from "../ProfileScreen/styles";
-import { useAppSelector } from "@/hooks";
-
-// Supondo que exista um hook para buscar usuários, substitua pelo correto se necessário
-// import { useUsersListQuery } from "@/store/api";
-
-// Mock de dados de usuários para exemplo
-const mockUsers = [
-  { id: "1", name: "Pedro", email: "pedro@email.com", phone: "(41) 99999-1111", role: "Admin" },
-  { id: "2", name: "Ana", email: "ana@email.com", phone: "(41) 98888-2222", role: "User" },
-  { id: "3", name: "Lucas", email: "lucas@email.com", phone: "(41) 97777-3333", role: "User" },
-];
+import { useDonorsQuery } from "@/store/api";
 
 export default function UsersListScreen() {
   const { styles } = useStyles(stylesheet);
-  // const { data: users, isLoading, error } = useUsersListQuery(); // Use a query real se existir
-  const users = mockUsers; // Remova quando usar a query real
-  const isLoading = false;
-  const error = undefined;
+  const { data: users = [], isLoading, error } = useDonorsQuery();
 
   return (
     <ScrollView
@@ -41,6 +28,8 @@ export default function UsersListScreen() {
             <Text style={styles.hospitalName}>{user.name}</Text>
             <Text style={styles.donationValue}>{user.email}</Text>
             <Text style={styles.donationValue}>Telefone: {user.phone || '-'}</Text>
+            <Text style={styles.donationValue}>CPF: {user.cpf}</Text>
+            <Text style={styles.donationValue}>Data de Nascimento: {user.dateOfBirth}</Text>
           </View>
         ))
       )}

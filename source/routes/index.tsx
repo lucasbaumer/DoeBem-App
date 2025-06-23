@@ -12,6 +12,8 @@ import { useAppSelector } from "@/hooks";
 import SignUpSuccessScreen from "@/screens/UnathenticatedFlow/SignUpSuccessScreen";
 import HospitalDetailsScreen from "@/screens/AuthenticatedFlow/HospitalDetailsScreen";
 import DonationScreen from "@/screens/AuthenticatedFlow/DonationScreen";
+import HospitalRegisterScreen from "@/screens/AuthenticatedFlow/HospitalRegisterScreen";
+
 
 const MainStack = createNativeStackNavigator();
 
@@ -51,6 +53,11 @@ export default function Routes() {
                 options={{
                   headerShown: false,
                 }}
+              />
+                            <MainStack.Screen
+                name="CreateHospital"
+                component={HospitalRegisterScreen}
+                options={{ header: () => <GoBackHeader label="Cadastrar Hospital" /> }}
               />
             </>
           ) : (

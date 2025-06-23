@@ -8,7 +8,7 @@ import {
 
 // eslint-disable-next-line import/no-unresolved
 // import { API_URL } from "@env";
-const API_URL = "http://172.20.10.4:5129";
+const API_URL = "http://10.0.2.2:5129";
 
 import { RootState } from ".";
 
@@ -25,6 +25,8 @@ import {
   MyDonationsResponse,
 } from "@/@types";
 import { DonateListResponse } from "@/@types/queries/DonateListResponse";
+import { DonorsResponse } from "@/@types/queries/DonorsResponse";
+import { HospitalRequest } from "@/@types/queries/HospitalRequest";
 
 export const api = createApi({
   reducerPath: "api",
@@ -39,7 +41,7 @@ export const api = createApi({
       return headers;
     },
   }) as BaseQueryFn<string | FetchArgs, unknown, object, FetchBaseQueryMeta>,
-  tagTypes: ["User", "Donation", "Shipment"],
+  tagTypes: ["User", "Donation", "Shipment", "hospital"],
   endpoints: (builder) => ({
     // Auth
     signIn: builder.mutation<SignInResponse, SignInRequest>({
@@ -76,6 +78,15 @@ export const api = createApi({
         url: "/api/Hospital",
         method: "GET",
       }),
+      providesTags: ["hospital"]
+    }),
+    hospital: builder.mutation<DefaultResponse, HospitalRequest>({
+      query: (body) => ({
+        url: "/api/Hospital",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["hospital"]
     }),
     hospitalDetails: builder.query<HospitalDetailsResponse, string>({
       query: (id) => ({
@@ -114,6 +125,12 @@ export const api = createApi({
       }),
       providesTags: ["Donation"],
     }),
+    donors: builder.query<DonorsResponse, void>({
+      query: (id) => ({
+        url: `/api/Donor`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -128,9 +145,12 @@ export const {
   // ** Hospital
   useHospitalListQuery,
   useHospitalDetailsQuery,
+  useHospitalMutation,
   // ** Donation
   useDonationMutation,
   useMyDonationsQuery,
   useDonationListQuery,
   useHospitalDonationsQuery,
+  // ** Users
+  useDonorsQuery
 } = api;
